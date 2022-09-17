@@ -1,6 +1,6 @@
 <template>
-  <el-upload action="http://localhost:8080/pic/batchUploadPic" multiple :show-file-list="false" :on-success="resetPage"
-    :limit="20" accept="image/jpg,image/jpeg,image/png">
+  <el-upload :action="'http://localhost:8080/album/batchUploadPic?albumId=' + albumId" multiple :show-file-list="false"
+    :on-success="resetPage" :limit="20" accept="image/jpg,image/jpeg,image/png">
     <el-button type="primary">上传</el-button>
   </el-upload>
 
@@ -9,8 +9,6 @@
       <a :href="fmtUrl(item.url)" target="_blank">
         <img :src="fmtUrl(item.url)" />
       </a>
-      <div>{{ fmtUrl(item.url) }}</div>
-      <el-button type="default" @click="copyUrl(fmtUrl(item.url), $event)">复制链接</el-button>
     </div>
     <p v-if="loading">正在加载...</p>
     <p v-if="noMore">我是有底线的</p>
@@ -23,9 +21,13 @@ import $http from '@/http'
 import Clipboard from 'clipboard'
 import { ElMessage } from 'element-plus'
 
+import { useRouter } from 'vue-router';
+const albumId = useRouter().currentRoute.value.params['albumId'];
+
 const req = reactive({
   page: 1,
   size: 10,
+  albumId: albumId,
 })
 
 const list = ref([])
@@ -37,7 +39,7 @@ const disabled = computed(() => loading.value || noMore.value)
 const load = () => {
   loading.value = true;
   $http({
-    url: '/pic/getPicPage',
+    url: '/album/getAlbumPicPage',
     params: req,
   }).then(resp => {
     const rows = resp.rows;
