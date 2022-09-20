@@ -1,61 +1,39 @@
 <template>
   <el-button type="primary">新增</el-button>
 
-  <div v-infinite-scroll="load" :infinite-scroll-disabled="disabled" infinite-scroll-distance="10" class="tao-infinite">
-    <div class="tao-infinite-item" v-for="item in list" :key="item.id">
-      {{ item.name }}
-    </div>
-    <p v-if="loading">正在加载...</p>
-    <p v-if="noMore">我是有底线的</p>
+  <div class="tao-infinite-item" v-for="item in page.resp.rows" :key="item.id">
+    {{ item.name }}
   </div>
+  <tao-pagination :page="page" @on-success="onSuccess"></tao-pagination>
 </template>
 
 <script setup>
-import { computed, reactive, ref } from 'vue'
-import $http from '@/http'
+import { reactive } from 'vue'
 
-const req = reactive({
-  page: 1,
-  size: 10,
+import TaoPagination from '@/components/TaoPagination.vue'
+import config from '@/config'
+
+const page = reactive({
+  api: '/album/getAlbumPage',
+  req: {
+    current: 1,
+    size: 10,
+  },
+  resp: {
+    rows: [],
+    total: 0,
+  }
 })
 
-const list = ref([])
-
-const loading = ref(false)
-const noMore = ref(false)
-const disabled = computed(() => loading.value || noMore.value)
-
-const load = () => {
-  loading.value = true;
-  $http({
-    url: '/album/getAlbumPage',
-    params: req,
-  }).then(resp => {
-    const rows = resp.rows;
-    if (rows.length > 0) {
-      list.value.push(...resp.rows);
-      req.page++;
-    } else {
-      noMore.value = true;
-    }
-  }).finally(() => {
-    loading.value = false;
-  })
-}
-
-const resetPage = () => {
-  req.page = 1;
-  list.value = [];
-  load();
+const onSuccess = resp => {
+  // 生成图片链接
+  resp.rows.forEach(item => {
+    item.picUrl = config.getPicUrl(item.coverFilename)
+  });
 }
 </script>
 
 <style scoped>
-.tao-infinite {
-  height: 400px;
-  overflow: auto;
-}
-
 .tao-infinite-item {
   border: 1px solid grey;
   border-radius: 2px;

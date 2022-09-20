@@ -1,66 +1,37 @@
 <template>
-  <el-upload action="http://localhost:8080/pic/batchUploadPic" multiple :show-file-list="false" :on-success="resetPage"
-    :limit="20" accept="image/jpg,image/jpeg,image/png">
+  <el-upload action="http://localhost:8080/pic/batchUploadPic" multiple :show-file-list="false" :limit="20"
+    accept="image/jpg,image/jpeg,image/png" name="files">
     <el-button type="primary">上传</el-button>
   </el-upload>
 
-  <div v-infinite-scroll="load" :infinite-scroll-disabled="disabled" infinite-scroll-distance="10" class="tao-infinite">
-    <div class="tao-infinite-item" v-for="item in list" :key="item.id">
-      <a :href="fmtUrl(item.url)" target="_blank">
-        <img :src="fmtUrl(item.url)" />
-      </a>
-      <div>{{ fmtUrl(item.url) }}</div>
-      <el-button type="default" @click="copyUrl(fmtUrl(item.url), $event)">复制链接</el-button>
-    </div>
-    <p v-if="loading">正在加载...</p>
-    <p v-if="noMore">我是有底线的</p>
+  <div class="tao-infinite-item" v-for="item in page.resp.rows" :key="item.id">
+    <a :href="item.picUrl" target="_blank">
+      <img :src="item.picUrl" />
+    </a>
+    <div>{{ item.picUrl }}</div>
+    <el-button type="default" @click="copyUrl(item.picUrl, $event)">复制链接</el-button>
   </div>
+  <tao-pagination :page="page" @on-success="onSuccess"></tao-pagination>
 </template>
 
 <script setup>
-import { computed, reactive, ref } from 'vue'
-import $http from '@/http'
+import { reactive, ref } from 'vue'
 import Clipboard from 'clipboard'
 import { ElMessage } from 'element-plus'
+import TaoPagination from '@/components/TaoPagination.vue'
+import config from '@/config'
 
-const req = reactive({
-  page: 1,
-  size: 10,
+const page = reactive({
+  api: '/pic/getPicPage',
+  req: {
+    current: 1,
+    size: 10,
+  },
+  resp: {
+    rows: [],
+    total: 0,
+  }
 })
-
-const list = ref([])
-
-const loading = ref(false)
-const noMore = ref(false)
-const disabled = computed(() => loading.value || noMore.value)
-
-const load = () => {
-  loading.value = true;
-  $http({
-    url: '/pic/getPicPage',
-    params: req,
-  }).then(resp => {
-    const rows = resp.rows;
-    if (rows.length > 0) {
-      list.value.push(...resp.rows);
-      req.page++;
-    } else {
-      noMore.value = true;
-    }
-  }).finally(() => {
-    loading.value = false;
-  })
-}
-
-const resetPage = () => {
-  req.page = 1;
-  list.value = [];
-  load();
-}
-
-const fmtUrl = (url) => {
-  return `http://localhost:8080/static/${url}`;
-}
 
 const copyUrl = (url, event) => {
   let clipboard = new Clipboard(event.target, {
@@ -79,13 +50,16 @@ const copyUrl = (url, event) => {
   })
   clipboard.onClick(event);
 }
+
+const onSuccess = resp => {
+  // 生成图片链接
+  resp.rows.forEach(item => {
+    item.picUrl = config.getPicUrl(item.filename)
+  });
+}
 </script>
 
 <style scoped>
-.tao-infinite {
-  height: 400px;
-  overflow: auto;
-}
 
 .tao-infinite-item {
   border: 1px solid grey;

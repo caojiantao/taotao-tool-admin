@@ -1,5 +1,5 @@
 export default {
-  title: '涛涛的工具小站',
+  title: '涛涛工具箱',
   routes: [
     {
       path: '/',
@@ -26,4 +26,7 @@ export default {
       isMenu: false,
     },
   ],
+  getPicUrl: filename => {
+    return `http://localhost:8080/static/${filename}`;
+  }
 }

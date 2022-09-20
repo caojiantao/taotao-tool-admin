@@ -12,13 +12,12 @@ const handleClick = (key, keyPath) => {
 <template>
   <el-menu>
     <template v-for="item in config.routes">
-      <el-menu-item :index="item.path" v-if="item.isMenu" @click="handleClick">
+      <el-menu-item :index="item.path" :key="item.path" v-if="item.isMenu" @click="handleClick">
         <el-icon>
           <icon-menu />
         </el-icon>
         <span>{{ item.title }}</span>
       </el-menu-item>
     </template>
-    
   </el-menu>
 </template>
