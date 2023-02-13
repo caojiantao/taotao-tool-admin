@@ -1,14 +1,15 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { RouterView } from 'vue-router'
-import config from './config'
 import TaoMenu from './components/TaoMenu.vue'
+import TaoHeader from './components/TaoHeader.vue'
+
 </script>
 
 <template>
   <el-container>
     <el-header>
-      {{ config.title }}
+      涛涛控制台
     </el-header>
     <el-container>
       <el-aside>

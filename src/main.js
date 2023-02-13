@@ -6,13 +6,9 @@ import router from './router'
 
 import './assets/main.css'
 
-import http from './http'
-
 const app = createApp(App)
 
 app.use(router)
 app.use(ElementPlus)
-
-app.config.globalProperties.$http = http;
 
 app.mount('#app')
