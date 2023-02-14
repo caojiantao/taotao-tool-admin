@@ -1,17 +1,18 @@
 <template>
   <el-row justify="space-between">
-    <el-col :span="8" v-for="(rank, i) in ranks" :key="i">
-      <div class="rank-title">{{ rank.title }}</div>
-      <div class="rank-list">
-        <a
-          class="rank-item"
-          v-for="(item, j) in rank.items"
-          :key="j"
-          :href="item.url"
-          target="_blank"
-          >{{ item.desc }}</a
-        >
-      </div>
+    <el-col :span="7" v-for="(rank, i) in ranks" :key="i">
+      <el-card shadow="always" :header="rank.title">
+        <div class="tt-card-content">
+          <a
+            class="rank-item"
+            v-for="(item, j) in rank.items"
+            :key="j"
+            :href="item.url"
+            target="_blank"
+            >{{ item.desc }}</a
+          >
+        </div>
+      </el-card>
     </el-col>
   </el-row>
 </template>
@@ -109,11 +110,6 @@ const getRank = (url, onSuccess) => {
 </script>
 
 <style scoped>
-.rank-title {
-  font-weight: 700;
-  font-size: 1.2rem;
-}
-
 .rank-item {
   display: block;
   line-height: 1.5rem;
@@ -125,5 +121,10 @@ const getRank = (url, onSuccess) => {
 .rank-item:hover {
   text-decoration: underline;
   color: blue;
+}
+
+.tt-card-content {
+  height: 500px;
+  overflow-y: auto;
 }
 </style>

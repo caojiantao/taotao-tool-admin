@@ -3,3 +3,7 @@
 #app {
   margin: 0 auto;
 }
+
+:root {
+  --el-aside-width: 250px;
+}

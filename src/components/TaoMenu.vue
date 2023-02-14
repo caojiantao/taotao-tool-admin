@@ -5,7 +5,6 @@ import router from "../router";
 
 const onSelect = (index) => {
   let menu = config.routes[index];
-  console.log(menu)
   router.push(menu.path);
 };
 </script>
