@@ -3,14 +3,9 @@
     <el-col :span="7" v-for="(rank, i) in ranks" :key="i">
       <el-card shadow="always" :header="rank.title">
         <div class="tt-card-content">
-          <a
-            class="rank-item"
-            v-for="(item, j) in rank.items"
-            :key="j"
-            :href="item.url"
-            target="_blank"
-            >{{ item.desc }}</a
-          >
+          <div class="tt-card-item" v-for="(item, j) in rank.items" :key="j">
+            <a :href="item.url" target="_blank">{{ item.desc }}</a>
+          </div>
         </div>
       </el-card>
     </el-col>
@@ -110,21 +105,23 @@ const getRank = (url, onSuccess) => {
 </script>
 
 <style scoped>
-.rank-item {
-  display: block;
-  line-height: 1.5rem;
-  text-decoration: none;
-  padding: 0.3rem 0;
-  color: black;
-}
-
-.rank-item:hover {
-  text-decoration: underline;
-  color: blue;
-}
-
 .tt-card-content {
   height: 500px;
   overflow-y: auto;
+}
+
+.tt-card-item {
+  padding: 0.3rem 0;
+}
+
+.tt-card-item a {
+  line-height: 1.5rem;
+  text-decoration: none;
+  color: black;
+}
+
+.tt-card-item a:hover {
+  text-decoration: underline;
+  color: blue;
 }
 </style>
