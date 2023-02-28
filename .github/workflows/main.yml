@@ -24,15 +24,15 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-    - run: npm install -g yarn 
-    - run: yarn install
-    - run: yarn docs:build
+    - run: npm install -g vite
+    - run: npm install
+    - run: npm run build
         
     - name: Deploy to server
       uses: easingthemes/ssh-deploy@v4.1.8
       with:
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        SOURCE: "docs/.vuepress/dist/"
+        SOURCE: "dist/"
         REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
         REMOTE_PORT: ${{ secrets.REMOTE_PORT }}
         REMOTE_USER: ${{ secrets.REMOTE_USER }}
