@@ -9,7 +9,7 @@
   "dependencies": {
     "axios": "^0.27.2",
     "clipboard": "^2.0.11",
-    "element-plus": "^2.2.14",
+    "element-plus": "^2.2.32",
     "vue-router": "^4.1.3"
   },
   "devDependencies": {
