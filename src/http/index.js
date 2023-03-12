@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
+import { toLogin } from '@/util/SSOUtils.js'
 
 const http = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -14,8 +15,7 @@ http.interceptors.response.use(
       return Promise.reject(new Error());
     } else if (apiResp.code == -2) {
       // 未登录需要重定向
-      let redirectUrl = encodeURI(window.location.href);
-      window.location.href = `/login.html?redirectUrl=${redirectUrl}`;
+      toLogin();
     }
     return apiResp.data;
   },

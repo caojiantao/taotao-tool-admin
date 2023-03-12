@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import config from '../config'
+import { getCookie } from '@/util/CookieUtils.js'
+import { toLogin } from '@/util/SSOUtils.js'
 
 const modules = import.meta.glob('../views/**/**.vue')
 
@@ -15,12 +17,18 @@ const router = createRouter({
   routes: routes,
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, from) => {
+  let userId = getCookie("user_id");
+  if (!userId) {
+    toLogin();
+    return false;
+  }
+
   let menu = config.routes.find(item => item.path == to.path);
   if (menu) {
     document.title = menu.title;
   }
-  next();
+  return false;
 })
 
 export default router
