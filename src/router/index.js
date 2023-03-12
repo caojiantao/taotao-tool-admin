@@ -28,7 +28,6 @@ router.beforeEach((to, from) => {
   if (menu) {
     document.title = menu.title;
   }
-  return false;
 })
 
 export default router
