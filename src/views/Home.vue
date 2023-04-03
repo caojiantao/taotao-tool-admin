@@ -4,7 +4,10 @@
       <el-card shadow="always" :header="rank.title">
         <div class="tt-card-content">
           <div class="tt-card-item" v-for="(item, j) in rank.items" :key="j">
-            <a :href="item.url" target="_blank">{{ item.desc }}</a>
+            <a :href="item.url" target="_blank">
+              {{ item.desc }} 
+              <img v-if="item.icon" :src="item.icon">
+            </a>
           </div>
         </div>
       </el-card>
@@ -43,6 +46,7 @@ const getRankWeibo = () => {
           index: index,
           desc: item.desc,
           url: item.scheme,
+          icon: item.icon,
         });
       });
     ranks.push(rank);
@@ -65,6 +69,7 @@ const getRankBaidu = () => {
         index: index,
         desc: item.word,
         url: item.url,
+        icon: item.hotTagImg,
       });
     });
     ranks.push(rank);
@@ -87,6 +92,7 @@ const getRankZhihu = () => {
         index: index,
         desc: item.target.title,
         url: `https://www.zhihu.com/question/${item.target.id}`,
+        icon: item.card_label?.icon,
       });
     });
     ranks.push(rank);
@@ -123,5 +129,9 @@ const getRank = (url, onSuccess) => {
 .tt-card-item a:hover {
   text-decoration: underline;
   color: blue;
+}
+
+.tt-card-item img {
+  width: 1rem;
 }
 </style>
