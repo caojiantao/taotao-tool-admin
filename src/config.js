@@ -16,9 +16,9 @@ export default {
       view: 'Image.vue',
     },
     {
-      path: '/id',
-      title: 'ID 生成',
-      view: 'Id.vue',
+      path: '/time-tool',
+      title: '日期工具',
+      view: 'TimeTool.vue',
     },
   ],
 }
