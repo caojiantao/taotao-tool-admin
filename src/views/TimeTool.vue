@@ -66,7 +66,7 @@ const form = reactive({
   string: '',
 
   time1: 1,
-  unit1: "8640000",
+  unit1: "86400000",
   time2: 1,
   unit2: "1",
 })
