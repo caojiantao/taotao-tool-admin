@@ -31,7 +31,7 @@ const upload = (item) => {
   }).then((data) => {
     fileList.push({
       filename: data,
-      url: `http://image.caojiantao.site:38080/${data}`,
+      url: `http://image.caojiantao.site:1024/${data}`,
     });
   });
 };

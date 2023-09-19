@@ -20,5 +20,10 @@ export default {
       title: '日期工具',
       view: 'TimeTool.vue',
     },
+    {
+      path: '/dictionary',
+      title: '字典管理',
+      view: 'Dictionary.vue',
+    },
   ],
 }
