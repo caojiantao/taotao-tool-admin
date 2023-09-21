@@ -30,22 +30,22 @@ onMounted(() => {
 
 const getRankWeibo = () => {
   const url =
-    "https://m.weibo.cn/api/container/getIndex?containerid=106003type%3D25%26filter_type%3Drealtimehot";
+    "https://weibo.com/ajax/side/hotSearch";
   const onSuccess = (data) => {
     let json = JSON.parse(data);
-    let list = json.data.cards[0].card_group;
+    let list = json.data.realtime;
     let rank = {
       icon: "",
       title: "微博实时热点，每分钟更新一次",
       items: [],
     };
     list
-      .filter((item) => item.desc_extr)
+      .filter((item) => !item.is_ad)
       .forEach((item, index) => {
         rank.items.push({
           index: index,
-          desc: item.desc,
-          url: item.scheme,
+          desc: item.word,
+          url: `https://s.weibo.com/weibo?q=${item.word}`,
           icon: item.icon,
         });
       });
@@ -121,6 +121,9 @@ const getRank = (url, onSuccess) => {
 }
 
 .tt-card-item a {
+  display: flex;
+  align-items: center;
+
   line-height: 1.5rem;
   text-decoration: none;
   color: black;

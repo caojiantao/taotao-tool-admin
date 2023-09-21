@@ -1,5 +1,9 @@
 <template>
-  <el-button type="primary" @click="openSavePopup({})">新增配置</el-button>
+  <el-form :model="form" inline>
+    <el-form-item>
+      <el-button type="primary" @click="openSavePopup({})">新增配置</el-button>
+    </el-form-item>
+  </el-form>
 
   <el-table :data="dataList" border>
     <el-table-column prop="itemKey" label="key" />

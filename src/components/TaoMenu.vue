@@ -1,6 +1,5 @@
 <script setup>
 import config from "../config";
-import { Menu as IconMenu } from "@element-plus/icons-vue";
 import router from "../router";
 
 const onSelect = (index) => {
@@ -16,7 +15,9 @@ const onSelect = (index) => {
       :index="index.toString()"
       :key="index"
     >
-      <el-icon><icon-menu /></el-icon>
+      <el-icon>
+        <component :is="item.icon"></component>
+      </el-icon>
       <span>{{ item.title }}</span>
     </el-menu-item>
   </el-menu>
