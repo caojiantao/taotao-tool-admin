@@ -1,4 +1,4 @@
-name: CI & CD
+name: 自动化构建部署
 
 on:
   push:
