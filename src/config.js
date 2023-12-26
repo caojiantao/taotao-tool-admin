@@ -30,5 +30,11 @@ export default {
       view: 'Dictionary.vue',
       icon: 'Document',
     },
+    {
+      path: '/database',
+      title: '数据库',
+      view: 'Database.vue',
+      icon: 'Document',
+    },
   ],
 }
