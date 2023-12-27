@@ -34,7 +34,7 @@ export default {
       path: '/database',
       title: '数据库',
       view: 'Database.vue',
-      icon: 'Document',
+      icon: 'Cpu',
     },
   ],
 }
