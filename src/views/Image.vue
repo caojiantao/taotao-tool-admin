@@ -1,56 +1,89 @@
 <template>
-  <el-upload :file-list="fileList" :http-request="upload" list-type="picture" :show-file-list="false" accept="image/*">
-    <el-button type="primary">上传</el-button>
-  </el-upload>
+  <el-form inline>
+    <el-form-item>
+      <el-select v-model="bucket">
+        <el-option label="博客" value="blog" />
+        <el-option label="恋爱记事本" value="love-note" />
+      </el-select>
+    </el-form-item>
+    <el-form-item>
+      <el-upload
+        :file-list="fileList"
+        :http-request="upload"
+        list-type="picture"
+        :show-file-list="false"
+        accept="image/*"
+      >
+        <el-button type="primary">上传</el-button>
+      </el-upload>
+    </el-form-item>
+  </el-form>
 
   <div class="image-item" v-for="(file, index) in fileList" :key="index">
     <el-divider />
     <div class="image-item-content">
-      <el-image style="width: 100px; height: 100px" :src="file.url" fit="cover" />
-      <a style="flex:auto;margin:0 20px;" :href="file.url" target="_blank">{{ file.url }}</a>
+      <!-- <el-image style="width: 100px; height: 100px" :src="file.url" fit="cover" /> -->
+      <!-- <a style="flex: auto; margin: 0 20px" :href="file.url" target="_blank">{{
+        file.url
+      }}</a> -->
+      {{file.filename}}
       <el-button type="danger" :icon="Delete" circle @click="deleteImage(file)" />
     </div>
   </div>
 </template>
 
 <script setup>
-import { reactive } from "vue";
-import { Delete } from '@element-plus/icons-vue'
+import { onMounted, reactive, ref } from "vue";
+import { Delete } from "@element-plus/icons-vue";
 
 import $http from "@/http";
 
-const fileList = reactive([]);
+const fileList = ref([]);
+
+const query = reactive({
+  current: 1,
+  size: 10,
+});
+
+const bucket = ref("blog");
+
+onMounted(() => {
+  list();
+})
+
+const list = () => {
+  $http({
+      url: "/system/media/list",
+      method: "get",
+      params: query,
+    })
+    .then((data) => {
+      fileList.value = data;
+    });
+}
 
 const upload = (item) => {
   let data = new FormData();
   data.append("file", item.file);
+  data.append("bucket", bucket.value);
   $http({
-    url: "/upload/image",
-    method: "post",
-    data: data,
-  }).then((data) => {
-    fileList.push({
-      filename: data,
-      url: `https://image.caojiantao.site:1024/${data}`,
+      url: "/system/media/upload",
+      method: "post",
+      data: data,
+    })
+    .then((data) => {
+      list();
     });
-  });
 };
 
 const deleteImage = (item) => {
   $http({
-    url: `/upload/image/delete?filename=${item.filename}`,
+    url: "/system/media/delete?id=" + item.id,
     method: "post",
   }).then((data) => {
-    let index = -1;
-    for (let i = 0; i < fileList.length; i++) {
-      if (fileList[i].filename == item.filename) {
-        index = i;
-        break;
-      }
-    }
-    fileList.splice(index, 1);
+    list();
   });
-}
+};
 </script>
 
 <style scoped>
