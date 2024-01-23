@@ -31,6 +31,12 @@ export default {
       icon: 'Document',
     },
     {
+      path: '/anniv',
+      title: '纪念日',
+      view: 'Anniv.vue',
+      icon: 'AlarmClock',
+    },
+    {
       path: '/database',
       title: '数据库',
       view: 'Database.vue',
