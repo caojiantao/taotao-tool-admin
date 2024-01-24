@@ -24,6 +24,8 @@
         <el-select v-model="form.annivType">
           <el-option label="生日" value="BIRTHDAY" />
           <el-option label="新婚" value="WEDDING" />
+          <el-option label="相识" value="MEET" />
+          <el-option label="告白" value="CONFESSION" />
         </el-select>
       </el-form-item>
       <el-form-item label="日期">
