@@ -31,6 +31,12 @@ export default {
       icon: 'Document',
     },
     {
+      path: '/todo',
+      title: '待办事项',
+      view: 'Todo.vue',
+      icon: 'Finished',
+    },
+    {
       path: '/anniv',
       title: '纪念日',
       view: 'Anniv.vue',
