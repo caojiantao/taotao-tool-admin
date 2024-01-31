@@ -16,11 +16,14 @@
   </el-form>
 
   <div>
-    <div class="item" v-for="(item, index) in dataList" :index="index" :key="index">
-      <el-checkbox v-model="item.checked" @change="onCheckedChange(item)" />
-      <el-text class="item-title-text" v-show="!item.edit" :type="item.checked?'info':''" :tag="item.checked?'del':'p'" @dblclick.native="onEdit(item)">{{item.title}}</el-text>
-      <el-input class="item-title-input" v-show="item.edit" :ref="(ref)=>setRef(ref, item)" v-model="item.title" @blur="onEditChange(item)" @keyup.enter="onEditChange(item)"/>
-      <el-link class="item-btn" type="danger" :icon="Delete" :underline="false" @click="deleteTodo(item)"></el-link>
+    <div class="group" v-for="(group, index) in groupList" :index="index" :key="index">
+      <el-text v-if="group.groupTitle">{{group.groupTitle}}</el-text>
+      <div class="item" v-for="(item, index) in group.itemList" :index="index" :key="index">
+        <el-checkbox v-model="item.checked" @change="onCheckedChange(item)" />
+        <el-text class="item-title-text" v-show="!item.edit" :type="item.checked?'info':''" :tag="item.checked?'del':'p'" @dblclick.native="onEdit(item)">{{item.title}}</el-text>
+        <el-input class="item-title-input" v-show="item.edit" :ref="(ref)=>setRef(ref, item)" v-model="item.title" @blur="onEditChange(item)" @keyup.enter="onEditChange(item)"/>
+        <el-link class="item-btn" type="danger" :icon="Delete" :underline="false" @click="deleteTodo(item)"></el-link>
+      </div>
     </div>
   </div>
 </template>
@@ -36,7 +39,7 @@ import {
 
 import $http from "@/http";
 
-const dataList = ref([]);
+const groupList = ref([]);
 const groupId = ref('10');
 
 const title = ref('');
@@ -55,22 +58,23 @@ const list = () => {
   $http({
     url: `/todo/listTodo?groupId=${groupId.value}`,
   }).then((data) => {
-    dataList.value = [];
-    let now = new moment().format("yyyy-MM-DD");
-    for (let item of data) {
-      // 如果不是今天完成 todo 项，则不用展示。也就是只展示未完成和当天已完成的
-      let updateTime = new moment(item.updateTime).format("yyyy-MM-DD");
-      let finished = item.state == 1;
-      if (finished && (now != updateTime)) {
-        continue;
+    groupList.value = [];
+    for (let group of data) {
+      let itemList = [];
+      for (let item of group.itemList) {
+        itemList.push({
+          id: item.id,
+          title: item.title,
+          checked: item.state == 1,
+          edit: false,
+        })
       }
-      dataList.value.push({
-        id: item.id,
-        title: item.title,
-        checked: finished,
-        edit: false,
+      groupList.value.push({
+        groupTitle: group.groupTitle,
+        itemList: itemList,
       })
     }
+    console.log(groupList.value)
   });
 }
 
