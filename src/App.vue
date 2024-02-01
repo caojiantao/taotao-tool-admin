@@ -1,8 +1,20 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, reactive, onMounted } from "vue";
 import { RouterView } from "vue-router";
 import TaoMenu from "./components/TaoMenu.vue";
 import TTHeader from "./components/TTHeader.vue";
+
+import $http from "@/http";
+
+const homeExtra = ref({});
+
+onMounted(() => {
+  $http({
+    url: "/home/getHomeExtraResp",
+  }).then((data) => {
+    homeExtra.value = data
+  });
+});
 </script>
 
 <template>
@@ -12,7 +24,7 @@ import TTHeader from "./components/TTHeader.vue";
     </el-aside>
     <el-container class="tt-main">
       <el-header>
-        <TTHeader />
+        <TTHeader :userInfo="homeExtra.userInfo" :weatherInfo="homeExtra.weatherInfo"/>
       </el-header>
       <el-main>
         <router-view />
