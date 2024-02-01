@@ -11,7 +11,7 @@
       </el-select>
     </el-form-item>
     <el-form-item>
-      <el-input v-model="title" placeholder="新的待办..." @keyup.enter="submitForm"/>
+      <el-input v-model="title" placeholder="新的待办..." @keyup.enter="quickSubmitForm"/>
     </el-form-item>
   </el-form>
 
@@ -22,10 +22,30 @@
         <el-checkbox v-model="item.checked" @change="onCheckedChange(item)" />
         <el-text class="item-title-text" v-show="!item.edit" :type="item.checked?'info':''" :tag="item.checked?'del':'p'" @dblclick.native="onEdit(item)">{{item.title}}</el-text>
         <el-input class="item-title-input" v-show="item.edit" :ref="(ref)=>setRef(ref, item)" v-model="item.title" @blur="onEditChange(item)" @keyup.enter="onEditChange(item)"/>
+        <el-link class="item-btn" :icon="ChatLineRound" :underline="false" @click="openSavePopup(item)"></el-link>
         <el-link class="item-btn" type="danger" :icon="Delete" :underline="false" @click="deleteTodo(item)"></el-link>
       </div>
     </div>
   </div>
+
+  <el-dialog v-model="dialogVisible" title="保存">
+    <el-form :model="form" label-width="50px">
+      <el-form-item label="标题">
+        <el-input v-model="form.title" />
+      </el-form-item>
+      <el-form-item label="内容">
+        <el-input v-model="form.content" type="textarea" rows="5"/>
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="dialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="submitForm">
+          提交
+        </el-button>
+      </span>
+    </template>
+  </el-dialog>
 </template>
 
 <script setup>
@@ -33,6 +53,7 @@ import { ref, onMounted } from "vue";
 import { ElMessageBox } from 'element-plus'
 import moment from 'moment';
 import {
+  ChatLineRound,
   Delete,
   Edit,
 } from '@element-plus/icons-vue'
@@ -43,6 +64,9 @@ const groupList = ref([]);
 const groupId = ref('10');
 
 const title = ref('');
+
+const form = ref({});
+const dialogVisible = ref(false);
 
 const refMap = new Map();
 
@@ -65,6 +89,7 @@ const list = () => {
         itemList.push({
           id: item.id,
           title: item.title,
+          content: item.content,
           checked: item.state == 1,
           edit: false,
         })
@@ -90,7 +115,7 @@ const deleteTodo = (item) => {
   });
 }
 
-const submitForm = () => {
+const quickSubmitForm = () => {
   $http({
     url: "/todo/saveTodo",
     method: "post",
@@ -136,6 +161,25 @@ const onEditChange = (item) => {
   });
 }
 
+const openSavePopup = (data) => {
+  form.value = {
+    'id': data.id,
+    'title': data.title,
+    'content': data.content,
+  }
+  dialogVisible.value = true;
+}
+
+const submitForm = () => {
+  $http({
+    url: "/todo/saveTodo",
+    method: "post",
+    data: form.value
+  }).then(() => {
+    dialogVisible.value = false;
+    list();
+  });
+}
 </script>
 
 <style scope>
