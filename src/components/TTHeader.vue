@@ -3,7 +3,7 @@
     <span class="tt-bread"> 首页 </span>
     <span class="tt-fill">  </span>
     <span v-if="weatherInfo" class="tt-weather"> {{weatherMsg}} </span>
-    <span v-if="userInfo" class="tt-userInfo"> {{userInfo.nickname}} </span>
+    <el-avatar v-if="userInfo" class="tt-userInfo" :size="30" :src="'http://media.caojiantao.site:1024/taotao-tool/' + userInfo.avatar" />
   </div>
 </template>
 

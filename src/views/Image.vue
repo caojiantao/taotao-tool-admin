@@ -3,7 +3,7 @@
     <el-form-item>
       <el-select v-model="query.bucket">
         <el-option label="博客" value="blog" />
-        <el-option label="恋爱记事本" value="love-note" />
+        <el-option label="涛涛工具箱" value="taotao-tool" />
       </el-select>
     </el-form-item>
     <el-form-item>
@@ -58,8 +58,6 @@ const query = reactive({
   size: 10,
 });
 
-const bucket = ref("blog");
-
 onMounted(() => {
   list();
 })
@@ -78,7 +76,7 @@ const list = () => {
 const upload = (item) => {
   let data = new FormData();
   data.append("file", item.file);
-  data.append("bucket", bucket.value);
+  data.append("bucket", query.bucket);
   $http({
       url: "/system/media/upload",
       method: "post",
