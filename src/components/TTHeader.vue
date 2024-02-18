@@ -26,9 +26,8 @@ watch(() => props.userInfo, (newVal) => {
 // 使用watch监听props的变化
 watch(() => props.weatherInfo, (newVal) => {
   weatherInfo.value = newVal;
-  let forecasts = newVal.forecasts;
-  let cast = forecasts.casts[0];
-  weatherMsg.value = `${cast.nighttemp}°~${cast.daytemp}° ${cast.dayweather}`;
+  let live = newVal;
+  weatherMsg.value = `${live.city} ${live.weather} ${live.temperature}°`;
 });
 
 
