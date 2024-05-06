@@ -4,10 +4,14 @@
       <el-select v-model="query.bucket">
         <el-option label="博客" value="blog" />
         <el-option label="涛涛工具箱" value="taotao-tool" />
+        <el-option label="个人资料" value="personal-data" />
       </el-select>
     </el-form-item>
     <el-form-item>
       <el-input v-model="query.filename" />
+    </el-form-item>
+    <el-form-item>
+      <el-checkbox v-model="keepName" label="原名保持" />
     </el-form-item>
     <el-form-item>
       <el-upload
@@ -46,10 +50,13 @@
 <script setup>
 import { onMounted, reactive, ref } from "vue";
 import { View, Delete } from "@element-plus/icons-vue";
+import { fmtBytes } from "@/util/common"
 
 import $http from "@/http";
 
 const fileList = ref([]);
+
+const keepName = ref(false);
 
 const query = reactive({
   bucket: "blog",
@@ -69,6 +76,9 @@ const list = () => {
       params: query,
     })
     .then((data) => {
+      for (let item of data) {
+        item.contentLength = fmtBytes(item.contentLength);
+      }
       fileList.value = data;
     });
 }
@@ -77,6 +87,7 @@ const upload = (item) => {
   let data = new FormData();
   data.append("file", item.file);
   data.append("bucket", query.bucket);
+  data.append("keepName", keepName.value);
   $http({
       url: "/system/media/upload",
       method: "post",
