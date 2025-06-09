@@ -1,6 +1,13 @@
 <template>
-  <el-pagination background layout="prev, pager, next" v-model:current-page="page.req.current"
-    :total="page.resp.total" />
+  <n-pagination 
+    v-model:page="page.req.current"
+    :page-count="Math.ceil(page.resp.total / page.req.size)"
+    show-quick-jumper
+    show-size-picker
+    :page-sizes="[10, 20, 50, 100]"
+    @update:page="load"
+    @update:page-size="handlePageSizeChange"
+  />
 </template>
 
 <script setup>
@@ -20,6 +27,12 @@ const load = () => {
     // 通知父组件
     emit('onSuccess', resp)
   })
+}
+
+const handlePageSizeChange = (pageSize) => {
+  props.page.req.size = pageSize;
+  props.page.req.current = 1;
+  load();
 }
 
 onMounted(() => {

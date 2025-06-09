@@ -1,24 +1,26 @@
 <script setup>
+import { ref } from 'vue'
 import config from "../config";
 import router from "../router";
 
-const onSelect = (index) => {
-  let menu = config.routes[index];
+const selectedKey = ref(null)
+
+const menuOptions = config.routes.map((item, index) => ({
+  label: item.title,
+  key: index.toString()
+}))
+
+const handleMenuSelect = (key) => {
+  selectedKey.value = key
+  let menu = config.routes[parseInt(key)];
   router.push(menu.path);
 };
 </script>
 
 <template>
-  <el-menu @select="onSelect">
-    <el-menu-item
-      v-for="(item, index) in config.routes"
-      :index="index.toString()"
-      :key="index"
-    >
-      <el-icon>
-        <component :is="item.icon"></component>
-      </el-icon>
-      <span>{{ item.title }}</span>
-    </el-menu-item>
-  </el-menu>
+  <n-menu
+    :options="menuOptions"
+    :value="selectedKey"
+    @update:value="handleMenuSelect"
+  />
 </template>

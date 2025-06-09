@@ -2,7 +2,7 @@
 import { ref, reactive, onMounted } from "vue";
 import { RouterView } from "vue-router";
 import TaoMenu from "./components/TaoMenu.vue";
-import TTHeader from "./components/TTHeader.vue";
+import TaoHeader from "./components/TaoHeader.vue";
 
 import $http from "@/http";
 
@@ -18,29 +18,32 @@ onMounted(() => {
 </script>
 
 <template>
-  <el-container>
-    <el-aside class="tt-aside">
+  <n-layout has-sider>
+    <n-layout-sider 
+      :width="250"
+      bordered
+      :native-scrollbar="false"
+    >
       <tao-menu />
-    </el-aside>
-    <el-container class="tt-main">
-      <el-header>
-        <TTHeader :userInfo="homeExtra.userInfo" :weatherInfo="homeExtra.weatherInfo"/>
-      </el-header>
-      <el-main>
+    </n-layout-sider>
+    <n-layout>
+      <n-layout-header class="tao-header">
+        <TaoHeader :userInfo="homeExtra.userInfo"/>
+      </n-layout-header>
+      <n-layout-content class="tao-main">
         <router-view />
-      </el-main>
-    </el-container>
-  </el-container>
+      </n-layout-content>
+    </n-layout>
+  </n-layout>
 </template>
 
 <style scoped>
-.tt-aside {
-  position: fixed;
-  overflow-y: auto;
-  height: 100%;
+.tao-header {
+  padding: 0 24px;
+  border-bottom: 1px solid var(--n-border-color);
 }
 
-.tt-main {
-  margin-left: var(--el-aside-width);
+.tao-main {
+  padding: 24px;
 }
 </style>

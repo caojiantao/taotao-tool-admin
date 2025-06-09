@@ -1,27 +1,42 @@
 <template>
-  <el-form :model="form">
-    <el-form-item>
-      <el-input v-model="form.sql" type="textarea" />
-    </el-form-item>
-    <el-form-item>
-      <el-button type="primary" @click="onSumitForm">查询</el-button>
-    </el-form-item>
-  </el-form>
+  <n-form>
+    <n-form-item>
+      <n-input 
+        v-model:value="form.sql" 
+        type="textarea" 
+        placeholder="请输入SQL语句"
+        :autosize="{ minRows: 3, maxRows: 8 }"
+      />
+    </n-form-item>
+    <n-form-item>
+      <n-button type="primary" @click="onSumitForm">查询</n-button>
+    </n-form-item>
+  </n-form>
 
-  <el-table :data="dataList" border>
-    <el-table-column v-for="item in head" :prop="item" :label="item" />
-  </el-table>
+  <n-data-table 
+    :columns="columns"
+    :data="dataList" 
+    :bordered="true"
+    :single-line="false"
+  />
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { ElMessageBox } from "element-plus";
+import { ref, computed } from "vue";
 
 import $http from "@/http";
 
 const head = ref([]);
 const dataList = ref([]);
 const form = ref({});
+
+const columns = computed(() => {
+  return head.value.map(item => ({
+    title: item,
+    key: item,
+    resizable: true
+  }))
+})
 
 const onSumitForm = () => {
   $http({

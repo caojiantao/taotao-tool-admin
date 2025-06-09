@@ -1,6 +1,8 @@
 import axios from 'axios'
-import { ElMessage } from 'element-plus'
+import { createDiscreteApi } from 'naive-ui'
 import { toLogin } from '@/util/SSOUtils.js'
+
+const { message } = createDiscreteApi(['message'])
 
 const http = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -12,7 +14,7 @@ http.interceptors.response.use(
     const apiResp = resp.data;
     if (apiResp.code == -1) {
       // 普通异常
-      ElMessage.error(apiResp.msg);
+      message.error(apiResp.msg);
       return Promise.reject(new Error());
     } else if (apiResp.code == -2) {
       // 未登录需要重定向
