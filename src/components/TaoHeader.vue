@@ -34,7 +34,6 @@ watch(() => props.userInfo, (newVal) => {
 }
 
 .tao-userInfo {
-  padding: 0 5px;
   cursor: pointer;
 }
 </style>

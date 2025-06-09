@@ -42,4 +42,9 @@ onMounted(() => {
 watch(() => props.page.req.current, (newValue, oldValue) => {
   load();
 });
+
+// 暴露load方法给父组件
+defineExpose({
+  load
+});
 </script>

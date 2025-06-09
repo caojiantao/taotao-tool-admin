@@ -18,23 +18,25 @@ onMounted(() => {
 </script>
 
 <template>
-  <n-layout has-sider>
-    <n-layout-sider 
-      :width="250"
-      bordered
-      :native-scrollbar="false"
-    >
-      <tao-menu />
-    </n-layout-sider>
-    <n-layout>
-      <n-layout-header class="tao-header">
-        <TaoHeader :userInfo="homeExtra.userInfo"/>
-      </n-layout-header>
-      <n-layout-content class="tao-main">
-        <router-view />
-      </n-layout-content>
+  <n-config-provider>
+    <n-layout has-sider>
+      <n-layout-sider 
+        :width="250"
+        bordered
+        :native-scrollbar="false"
+      >
+        <tao-menu />
+      </n-layout-sider>
+      <n-layout>
+        <n-layout-header class="tao-header">
+          <TaoHeader :userInfo="homeExtra.userInfo"/>
+        </n-layout-header>
+        <n-layout-content class="tao-main">
+          <router-view />
+        </n-layout-content>
+      </n-layout>
     </n-layout>
-  </n-layout>
+  </n-config-provider>
 </template>
 
 <style scoped>

@@ -8,12 +8,10 @@
       :show-file-list="false"
       accept="image/*"
       :multiple="false"
-      @before-upload="beforeUpload"
-      @change="onChange"
     >
       <n-button type="primary">上传图片</n-button>
     </n-upload>
-    <n-button type="primary" @click="list">查询</n-button>
+    <n-button type="primary" @click="handleSearch">查询</n-button>
   </n-space>
 
   <n-data-table 
@@ -21,17 +19,23 @@
     :data="fileList" 
     :bordered="true"
   />
+
+  <div style="margin-top: 16px; display: flex; justify-content: center;">
+    <TaoPagination ref="paginationRef" :page="page" @onSuccess="onPageSuccess" />
+  </div>
 </template>
 
 <script setup>
 import { onMounted, reactive, ref, h } from "vue";
 import { fmtBytes } from "@/util/common"
 import { NButton } from 'naive-ui'
+import TaoPagination from "@/components/TaoPagination.vue";
 
 import $http from "@/http";
 
 const fileList = ref([]);
 const keepName = ref(false);
+const paginationRef = ref(null);
 
 const bucketOptions = [
   { label: "博客", value: "blog" },
@@ -42,8 +46,20 @@ const bucketOptions = [
 const query = reactive({
   bucket: "blog",
   filename: "",
-  current: 1,
-  size: 10,
+});
+
+// 分页配置
+const page = reactive({
+  api: "/system/media/page",
+  req: {
+    current: 1,
+    size: 10,
+    bucket: "blog",
+    filename: "",
+  },
+  resp: {
+    total: 0
+  }
 });
 
 const columns = [
@@ -76,26 +92,33 @@ const columns = [
 ]
 
 onMounted(() => {
-  list();
+  // 初始化分页参数
+  page.req.bucket = query.bucket;
+  page.req.filename = query.filename;
 })
 
-const list = () => {
-  $http({
-      url: "/system/media/list",
-      method: "get",
-      params: query,
-    })
-    .then((data) => {
-      for (let item of data) {
-        item.contentLength = fmtBytes(item.contentLength);
-      }
-      fileList.value = data;
-    });
+// 分页成功回调
+const onPageSuccess = (resp) => {
+  // 后端返回结构：{ rows: [], total: number }
+  const dataList = resp.rows || [];
+  for (let item of dataList) {
+    item.contentLength = fmtBytes(item.contentLength);
+  }
+  fileList.value = dataList;
+}
+
+// 查询按钮点击
+const handleSearch = () => {
+  page.req.bucket = query.bucket;
+  page.req.filename = query.filename;
+  
+  // 直接调用分页组件的load方法，保持当前页码
+  if (paginationRef.value) {
+    paginationRef.value.load();
+  }
 }
 
 const upload = (options) => {
-  console.log('Upload options:', options); // 调试用
-  
   let data = new FormData();
   data.append("file", options.file.file || options.file);  // 兼容不同的文件对象结构
   data.append("bucket", query.bucket);
@@ -107,23 +130,14 @@ const upload = (options) => {
       data: data,
     })
     .then((data) => {
-      console.log('Upload success:', data);
-      list();
+      // 上传成功后刷新当前页
+      page.req.current = 1; // 回到第一页显示新上传的文件
       options.onFinish();  // 必须调用 onFinish()
     })
     .catch((error) => {
       console.error('Upload error:', error);
       options.onError();   // 必须调用 onError()
     });
-};
-
-const beforeUpload = (data) => {
-  console.log('Before upload:', data);
-  return true;
-};
-
-const onChange = (data) => {
-  console.log('Upload change:', data);
 };
 
 const onClickView = (item) => {
@@ -136,16 +150,12 @@ const onClickDelete = (item) => {
       url: "/system/media/delete?id=" + item.id,
       method: "post",
     }).then((data) => {
-      list();
+      // 删除成功后刷新当前页
+      handleSearch();
     });
   }
 };
 </script>
 
 <style scoped>
-.image-item-content {
-  display: flex;
-  align-items: center;
-  padding: 5px 10px;
-}
 </style>
