@@ -1,6 +1,5 @@
 <template>
   <div class="tao-header">
-    <span class="tao-bread">首页</span>
     <span class="tao-fill"></span>
     <n-avatar v-if="userInfo" class="tao-userInfo" :size="30" :src="'http://media.caojiantao.site:1024/taotao-tool/' + userInfo.avatar" />
   </div>
